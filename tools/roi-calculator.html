@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>自动化 ROI 计算器</title>
+  <style>
+    body { font-family: -apple-system, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; background: #f5f5f5; }
+    .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    h1 { color: #333; text-align: center; margin-bottom: 10px; }
+    .subtitle { text-align: center; color: #666; margin-bottom: 30px; }
+    .form-group { margin-bottom: 15px; display: flex; align-items: center; justify-content: space-between; }
+    label { font-weight: 500; color: #444; }
+    input[type=range] { width: 60%; margin: 0 15px; }
+    .value-display { width: 60px; text-align: right; font-weight: bold; color: #007AFF; }
+    .presets { display: flex; gap: 10px; justify-content: center; margin: 20px 0; flex-wrap: wrap; }
+    .preset-btn { padding: 8px 16px; border: 2px solid #007AFF; background: white; color: #007AFF; border-radius: 20px; cursor: pointer; }
+    .preset-btn:hover, .preset-btn.active { background: #007AFF; color: white; }
+    table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+    th { color: #666; font-weight: 600; }
+    .highlight { color: #34C759; font-weight: bold; }
+    .gain { color: #FF9500; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🤖 自动化投资回报计算器</h1>
+    <p class="subtitle">看看你的业务能节省多少钱</p>
+
+    <div class="presets">
+      <button class="preset-btn" onclick="setPreset('cafe')">☕ 咖啡馆</button>
+      <button class="preset-btn" onclick="setPreset('ecommerce')">🛒 电商店主</button>
+      <button class="preset-btn" onclick="setPreset('crossborder')">🌏 跨境电商</button>
+      <button class="preset-btn" onclick="setPreset('freelancer')">💻 自由职业</button>
+    </div>
+
+    <div class="form-group">
+      <label>员工每日重复工时（小时/人）</label>
+      <input type="range" id="hours" min="0.5" max="12" step="0.5" value="2.5" oninput="calc()">
+      <span class="value-display" id="hours-val">2.5</span>
+    </div>
+
+    <div class="form-group">
+      <label>涉及员工人数</label>
+      <input type="range" id="employees" min="1" max="20" step="1" value="3" oninput="calc()">
+      <span class="value-display" id="employees-val">3</span>
+    </div>
+
+    <div class="form-group">
+      <label>平均小时工资（元）</label>
+      <input type="range" id="wage" min="20" max="200" step="5" value="30" oninput="calc()">
+      <span class="value-display" id="wage-val">30</span>
+    </div>
+
+    <div class="form-group">
+      <label>自动化实施成本（元）</label>
+      <input type="range" id="cost" min="1000" max="50000" step="500" value="2999" oninput="calc()">
+      <span class="value-display" id="cost-val">2999</span>
+    </div>
+
+    <div class="form-group">
+      <label>预期效率提升</label>
+      <input type="range" id="efficiency" min="0.3" max="0.95" step="0.05" value="0.7" oninput="calc()">
+      <span class="value-display" id="efficiency-val">70%</span>
+    </div>
+
+    <table>
+      <tr><th>指标</th><th>当前</th><th>自动化后</th></tr>
+      <tr><td>每月人力工时</td><td id="current-hours">-</td><td id="saved-hours">-</td></tr>
+      <tr><td>每月人力成本</td><td id="current-cost">-</td><td id="saved-cost">-</td></tr>
+      <tr><td style="padding-top:20px;"><strong>净节省（月）</strong></td><td colspan="2" class="highlight" id="monthly-save">-</td></tr>
+      <tr><td><strong>回本周期</strong></td><td colspan="2" class="gain" id="payback">-</td></tr>
+      <tr><td><strong>一年净节省</strong></td><td colspan="2" class="highlight" id="annual-save">-</td></tr>
+      <tr><td><strong>年化 ROI</strong></td><td colspan="2" class="gain" id="roi">-</td></tr>
+    </table>
+  </div>
+
+  <div class="card">
+    <h3>💡 使用说明</h3>
+    <ul style="line-height: 1.8;">
+      <li><strong>员工每日重复工时</strong>：每个员工每天花在可自动化任务上的时间（如：数据录入、回复常见问题）</li>
+      <li><strong>涉及人数</strong>：多少个员工有这部分重复工作</li>
+      <li><strong>小时工资</strong>：包含社保福利的真实成本，一般按 30-80 元估算</li>
+      <li><strong>实施成本</strong>：我的服务费（基础包 2999、标准包 6999）</li>
+      <li><strong>效率提升</strong>：保守起见，一般填 70%（自动化可以处理大部分，但留一些例外情况人工处理）</li>
+    </ul>
+  </div>
+
+  <script>
+    function formatMoney(num) {
+      return '¥' + Math.round(num).toLocaleString();
+    }
+
+    function calc() {
+      const hours = parseFloat(document.getElementById('hours').value);
+      const employees = parseInt(document.getElementById('employees').value);
+      const wage = parseFloat(document.getElementById('wage').value);
+      const cost = parseFloat(document.getElementById('cost').value);
+      const efficiency = parseFloat(document.getElementById('efficiency').value);
+
+      document.getElementById('hours-val').textContent = hours;
+      document.getElementById('employees-val').textContent = employees;
+      document.getElementById('wage-val').textContent = wage;
+      document.getElementById('cost-val').textContent = cost;
+      document.getElementById('efficiency-val').textContent = Math.round(efficiency * 100) + '%';
+
+      const workDays = 22; // 每月工作日
+      const currentHours = hours * employees * workDays;
+      const currentCost = currentHours * wage;
+      const savedHours = currentHours * efficiency;
+      const savedCost = savedHours * wage;
+      const monthlyNet = savedCost; // 暂时忽略月维护费
+      const paybackMonths = cost / monthlyNet;
+      const annualSave = monthlyNet * 12;
+      const roi = (annualSave / cost) * 100;
+
+      document.getElementById('current-hours').textContent = currentHours.toFixed(1) + ' 小时';
+      document.getElementById('saved-hours').textContent = savedHours.toFixed(1) + ' 小时';
+      document.getElementById('current-cost').textContent = formatMoney(currentCost);
+      document.getElementById('saved-cost').textContent = formatMoney(savedCost);
+      document.getElementById('monthly-save').textContent = formatMoney(monthlyNet) + '/月';
+      document.getElementById('payback').textContent = paybackMonths >= 1 ? (paybackMonths.toFixed(1) + ' 个月') : ('< 1 个月（超快回本🔥）');
+      document.getElementById('annual-save').textContent = formatMoney(annualSave);
+      document.getElementById('roi').textContent = roi.toFixed(0) + '% 年化回报';
+    }
+
+    function setPreset(type) {
+      const presets = {
+        cafe: { hours: 2.5, employees: 3, wage: 30, cost: 2999, efficiency: 0.8 },
+        ecommerce: { hours: 4, employees: 2, wage: 40, cost: 6999, efficiency: 0.75 },
+        crossborder: { hours: 6, employees: 2, wage: 50, cost: 9999, efficiency: 0.8 },
+        freelancer: { hours: 1.5, employees: 1, wage: 100, cost: 2999, efficiency: 0.7 }
+      };
+      const p = presets[type];
+      document.getElementById('hours').value = p.hours;
+      document.getElementById('employees').value = p.employees;
+      document.getElementById('wage').value = p.wage;
+      document.getElementById('cost').value = p.cost;
+      document.getElementById('efficiency').value = p.efficiency;
+      calc();
+    }
+
+    // Initial calc
+    calc();
+  </script>
+</body>
+</html>
