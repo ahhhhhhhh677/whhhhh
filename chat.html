@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI聊天 - 稳定、便宜、国内直连</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .chat-container {
+            height: calc(100vh - 180px);
+            overflow-y: auto;
+        }
+        .message-user {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        .message-assistant {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .typing {
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .sidebar-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .sidebar-item.active {
+            background: rgba(59, 130, 246, 0.2);
+            border-right: 3px solid #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 text-white min-h-screen">
+    <div class="flex h-screen">
+        <!-- 侧边栏 -->
+        <div class="w-72 bg-gray-800 border-r border-gray-700 flex flex-col">
+            <div class="p-4 border-b border-gray-700">
+                <div class="flex items-center justify-between">
+                    <h1 class="text-xl font-bold">🚀 AI聊天</h1>
+                    <button onclick="toggleSidebar()" class="p-2 hover:bg-gray-700 rounded-lg">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+                <button onclick="newChat()" class="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition">
+                    + 新对话
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto p-2">
+                <div class="text-xs text-gray-500 px-2 py-1">聊天记录</div>
+                <div id="chatHistory" class="space-y-1">
+                    <!-- 聊天记录会在这里动态添加 -->
+                </div>
+            </div>
+
+            <div class="p-4 border-t border-gray-700">
+                <div class="space-y-2">
+                    <div class="text-xs text-gray-500">API密钥</div>
+                    <div id="apiKeyDisplay" class="text-sm bg-gray-700 p-2 rounded text-gray-300">
+                        未登录
+                    </div>
+                    <button onclick="showLoginModal()" class="w-full text-sm text-blue-400 hover:text-blue-300">
+                        登录 / 注册
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主聊天区域 -->
+        <div class="flex-1 flex flex-col">
+            <!-- 顶部栏 -->
+            <div class="h-16 bg-gray-800 border-b border-gray-700 flex items-center justify-between px-6">
+                <div class="flex items-center space-x-4">
+                    <select id="modelSelect" class="bg-gray-700 border border-gray-600 rounded-lg px-3 py-2 text-sm">
+                        <option value="Qwen/Qwen2.5-7B-Instruct">通义千问 Qwen2.5-7B</option>
+                        <option value="deepseek-ai/DeepSeek-R1">DeepSeek-R1</option>
+                        <option value="meta-llama/Llama-3.3-70B-Instruct">Llama 3.3-70B</option>
+                    </select>
+                    <div class="flex items-center space-x-2">
+                        <button id="btnWebSearch" onclick="toggleWebSearch()" class="p-2 hover:bg-gray-700 rounded-lg text-sm">
+                            🌐 联网
+                        </button>
+                        <button id="btnImage" onclick="toggleImage()" class="p-2 hover:bg-gray-700 rounded-lg text-sm">
+                            📷 图像
+                        </button>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="clearChat()" class="p-2 hover:bg-gray-700 rounded-lg text-sm">
+                        🗑️ 清空
+                    </button>
+                    <button onclick="exportChat()" class="p-2 hover:bg-gray-700 rounded-lg text-sm">
+                        📥 导出
+                    </button>
+                </div>
+            </div>
+
+            <!-- 聊天消息区域 -->
+            <div id="chatContainer" class="chat-container flex-1 p-6 overflow-y-auto">
+                <div id="messages" class="max-w-4xl mx-auto space-y-6">
+                    <!-- 欢迎消息 -->
+                    <div class="text-center py-16">
+                        <div class="text-6xl mb-4">🤖</div>
+                        <h2 class="text-2xl font-bold mb-2">你好！我是AI助手</h2>
+                        <p class="text-gray-400 mb-8">有什么我可以帮助你的吗？</p>
+                        <div class="grid grid-cols-2 gap-4 max-w-2xl mx-auto">
+                            <button onclick="quickQuestion('写一篇关于AI的文章')" class="p-4 bg-gray-800 hover:bg-gray-700 rounded-xl text-left transition">
+                                <div class="text-lg mb-1">✍️ 写文章</div>
+                                <div class="text-sm text-gray-400">写一篇关于AI的文章</div>
+                            </button>
+                            <button onclick="quickQuestion('帮我写Python代码')" class="p-4 bg-gray-800 hover:bg-gray-700 rounded-xl text-left transition">
+                                <div class="text-lg mb-1">💻 写代码</div>
+                                <div class="text-sm text-gray-400">帮我写Python代码</div>
+                            </button>
+                            <button onclick="quickQuestion('翻译英文到中文')" class="p-4 bg-gray-800 hover:bg-gray-700 rounded-xl text-left transition">
+                                <div class="text-lg mb-1">🌍 翻译</div>
+                                <div class="text-sm text-gray-400">翻译英文到中文</div>
+                            </button>
+                            <button onclick="quickQuestion('帮我分析数据')" class="p-4 bg-gray-800 hover:bg-gray-700 rounded-xl text-left transition">
+                                <div class="text-lg mb-1">📊 分析</div>
+                                <div class="text-sm text-gray-400">帮我分析数据</div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 输入区域 -->
+            <div class="p-6 bg-gray-800 border-t border-gray-700">
+                <div class="max-w-4xl mx-auto">
+                    <div class="bg-gray-700 rounded-xl border border-gray-600">
+                        <div id="imagePreview" class="hidden p-4 border-b border-gray-600">
+                            <div class="flex items-center space-x-2">
+                                <img id="previewImage" class="w-20 h-20 object-cover rounded-lg">
+                                <button onclick="clearImage()" class="text-red-400 hover:text-red-300">
+                                    ✕ 删除
+                                </button>
+                            </div>
+                        </div>
+                        <textarea id="messageInput" 
+                            placeholder="输入消息... (Shift+Enter 换行)" 
+                            class="w-full bg-transparent p-4 text-white placeholder-gray-400 resize-none focus:outline-none"
+                            rows="3"
+                            onkeydown="handleKeyDown(event)"></textarea>
+                        <div class="flex items-center justify-between p-3 border-t border-gray-600">
+                            <div class="flex items-center space-x-2">
+                                <label class="p-2 hover:bg-gray-600 rounded-lg cursor-pointer">
+                                    <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="handleImageSelect(event)">
+                                    📎 附件
+                                </label>
+                            </div>
+                            <button onclick="sendMessage()" id="sendBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg font-medium transition flex items-center space-x-2">
+                                <span>发送</span>
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center text-xs text-gray-500 mt-2">
+                        AI可能犯错，请核实重要信息
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 登录弹窗 -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+        <div class="bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold mb-4">登录 / 注册</h3>
+            <div class="space-y-4">
+                <div>
+                    <p class="text-gray-400 mb-4">点击下方按钮获取免费API密钥</p>
+                    <button onclick="register()" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-medium transition">
+                        获取API密钥
+                    </button>
+                </div>
+                <div class="border-t border-gray-700 pt-4">
+                    <label class="block text-sm text-gray-400 mb-2">已有API密钥？</label>
+                    <input type="text" id="apiKeyInput" placeholder="输入您的API密钥" class="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-2 text-white">
+                    <button onclick="loginWithKey()" class="w-full mt-2 bg-gray-600 hover:bg-gray-500 text-white py-2 rounded-lg font-medium transition">
+                        使用API密钥登录
+                    </button>
+                </div>
+            </div>
+            <button onclick="hideLoginModal()" class="w-full mt-4 text-gray-400 hover:text-white">
+                关闭
+            </button>
+        </div>
+    </div>
+
+    <script>
+        let currentApiKey = localStorage.getItem('api_key') || null;
+        let currentChatId = null;
+        let messages = [];
+        let webSearchEnabled = false;
+        let imageEnabled = false;
+        let selectedImage = null;
+
+        function init() {
+            if (currentApiKey) {
+                updateApiKeyDisplay();
+            }
+            loadChatHistory();
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.w-72');
+            sidebar.classList.toggle('hidden');
+        }
+
+        function newChat() {
+            currentChatId = 'chat_' + Date.now();
+            messages = [];
+            document.getElementById('messages').innerHTML = `
+                <div class="text-center py-16">
+                    <div class="text-6xl mb-4">🤖</div>
+                    <h2 class="text-2xl font-bold mb-2">你好！我是AI助手</h2>
+                    <p class="text-gray-400 mb-8">有什么我可以帮助你的吗？</p>
+                </div>
+            `;
+            saveChatHistory();
+        }
+
+        function quickQuestion(question) {
+            document.getElementById('messageInput').value = question;
+            sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            if (!currentApiKey) {
+                showLoginModal();
+                return;
+            }
+
+            input.value = '';
+            addMessage('user', message);
+            showTypingIndicator();
+
+            try {
+                const model = document.getElementById('modelSelect').value;
+                const response = await fetch('/api/proxy', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + currentApiKey
+                    },
+                    body: JSON.stringify({
+                        provider: 'siliconflow',
+                        endpoint: 'chat/completions',
+                        data: {
+                            model: model,
+                            messages: [
+                                { role: 'user', content: message }
+                            ]
+                        }
+                    })
+                });
+
+                const data = await response.json();
+                hideTypingIndicator();
+                
+                if (data.choices && data.choices[0]) {
+                    addMessage('assistant', data.choices[0].message.content);
+                } else {
+                    addMessage('assistant', '抱歉，发生了错误，请重试。');
+                }
+            } catch (error) {
+                hideTypingIndicator();
+                addMessage('assistant', '网络错误，请检查连接后重试。');
+            }
+
+            saveChatHistory();
+        }
+
+        function addMessage(role, content) {
+            messages.push({ role, content, time: new Date().toISOString() });
+            
+            const messagesContainer = document.getElementById('messages');
+            
+            const welcomeDiv = messagesContainer.querySelector('.text-center.py-16');
+            if (welcomeDiv) welcomeDiv.remove();
+
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `flex ${role === 'user' ? 'justify-end' : 'justify-start'}`;
+            messageDiv.innerHTML = `
+                <div class="max-w-2xl ${role === 'user' ? 'message-user' : 'message-assistant'} rounded-2xl px-6 py-4">
+                    <div class="whitespace-pre-wrap">${escapeHtml(content)}</div>
+                </div>
+            `;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('messages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'flex justify-start';
+            typingDiv.innerHTML = `
+                <div class="bg-gray-700 rounded-2xl px-6 py-4 typing">
+                    <span class="text-gray-400">正在思考...</span>
+                </div>
+            `;
+            messagesContainer.appendChild(typingDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function hideTypingIndicator() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function toggleWebSearch() {
+            webSearchEnabled = !webSearchEnabled;
+            const btn = document.getElementById('btnWebSearch');
+            btn.className = webSearchEnabled 
+                ? 'p-2 bg-blue-600 rounded-lg text-sm'
+                : 'p-2 hover:bg-gray-700 rounded-lg text-sm';
+        }
+
+        function toggleImage() {
+            imageEnabled = !imageEnabled;
+            const btn = document.getElementById('btnImage');
+            btn.className = imageEnabled 
+                ? 'p-2 bg-blue-600 rounded-lg text-sm'
+                : 'p-2 hover:bg-gray-700 rounded-lg text-sm';
+        }
+
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedImage = file;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('previewImage').src = e.target.result;
+                    document.getElementById('imagePreview').classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function clearImage() {
+            selectedImage = null;
+            document.getElementById('imagePreview').classList.add('hidden');
+            document.getElementById('imageInput').value = '';
+        }
+
+        function clearChat() {
+            if (confirm('确定要清空当前对话吗？')) {
+                newChat();
+            }
+        }
+
+        function exportChat() {
+            const data = JSON.stringify(messages, null, 2);
+            const blob = new Blob([data], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'chat_history.json';
+            a.click();
+        }
+
+        function showLoginModal() {
+            document.getElementById('loginModal').classList.remove('hidden');
+            document.getElementById('loginModal').classList.add('flex');
+        }
+
+        function hideLoginModal() {
+            document.getElementById('loginModal').classList.add('hidden');
+            document.getElementById('loginModal').classList.remove('flex');
+        }
+
+        async function register() {
+            try {
+                const response = await fetch('/api/create-user', { method: 'POST' });
+                const data = await response.json();
+                if (data.api_key) {
+                    currentApiKey = data.api_key;
+                    localStorage.setItem('api_key', currentApiKey);
+                    updateApiKeyDisplay();
+                    hideLoginModal();
+                    alert('注册成功！您的API密钥已保存。');
+                }
+            } catch (error) {
+                alert('注册失败，请重试');
+            }
+        }
+
+        function loginWithKey() {
+            const key = document.getElementById('apiKeyInput').value.trim();
+            if (key) {
+                currentApiKey = key;
+                localStorage.setItem('api_key', currentApiKey);
+                updateApiKeyDisplay();
+                hideLoginModal();
+            }
+        }
+
+        function updateApiKeyDisplay() {
+            if (currentApiKey) {
+                document.getElementById('apiKeyDisplay').textContent = currentApiKey.substring(0, 15) + '...';
+            }
+        }
+
+        function saveChatHistory() {
+            if (currentChatId && messages.length > 0) {
+                const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+                const existing = history.findIndex(h => h.id === currentChatId);
+                const chatItem = {
+                    id: currentChatId,
+                    title: messages[0]?.content?.substring(0, 30) || '新对话',
+                    messages: messages,
+                    time: new Date().toISOString()
+                };
+                if (existing >= 0) {
+                    history[existing] = chatItem;
+                } else {
+                    history.unshift(chatItem);
+                }
+                localStorage.setItem('chatHistory', JSON.stringify(history.slice(0, 50)));
+                loadChatHistory();
+            }
+        }
+
+        function loadChatHistory() {
+            const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            const container = document.getElementById('chatHistory');
+            container.innerHTML = history.map(chat => `
+                <div class="sidebar-item p-3 rounded-lg cursor-pointer" onclick="loadChat('${chat.id}')">
+                    <div class="text-sm truncate">${escapeHtml(chat.title)}</div>
+                    <div class="text-xs text-gray-500">${new Date(chat.time).toLocaleDateString()}</div>
+                </div>
+            `).join('');
+        }
+
+        function loadChat(chatId) {
+            const history = JSON.parse(localStorage.getItem('chatHistory') || '[]');
+            const chat = history.find(h => h.id === chatId);
+            if (chat) {
+                currentChatId = chatId;
+                messages = chat.messages;
+                const messagesContainer = document.getElementById('messages');
+                messagesContainer.innerHTML = '';
+                messages.forEach(msg => addMessage(msg.role, msg.content));
+            }
+        }
+
+        init();
+    </script>
+</body>
+</html>
