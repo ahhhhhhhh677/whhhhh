@@ -29,10 +29,10 @@ app = FastAPI(title="AI服务中转代理")
 # 挂载静态文件
 app.mount("/static", StaticFiles(directory="."), name="static")
 
-# 添加根路径重定向到管理界面
+# 添加根路径重定向到客户页面
 @app.get("/")
 def root():
-    return RedirectResponse(url="/static/proxy_admin.html")
+    return RedirectResponse(url="/static/customer_portal.html")
 
 # 系统信息端点
 @app.get("/info")

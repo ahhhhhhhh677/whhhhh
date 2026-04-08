@@ -1,0 +1,18 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "app_proxy.py",
+      "use": "@vercel/python"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "app_proxy.py"
+    }
+  ],
+  "env": {
+    "SILICONFLOW_API_KEY": "sk-olvfymjregzucoaqmgirgbsahiptcafpmdtenjumerlzvtem"
+  }
+}

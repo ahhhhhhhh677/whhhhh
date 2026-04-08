@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI API服务 - 客户平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .loading {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .tab-active {
+            border-bottom: 3px solid #3b82f6;
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="bg-white shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <h1 class="text-2xl font-bold text-gray-800">🚀 AI API服务平台</h1>
+                <div id="userInfo" class="hidden">
+                    <span class="text-gray-600">API密钥：</span>
+                    <span id="apiKeyDisplay" class="font-mono bg-gray-100 px-2 py-1 rounded text-sm"></span>
+                    <span class="ml-4 text-gray-600">余额：</span>
+                    <span id="balanceDisplay" class="font-bold text-green-600"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <!-- 未登录状态 -->
+        <div id="notLoggedIn" class="text-center py-16">
+            <div class="bg-white rounded-xl shadow-lg p-8 max-w-md mx-auto">
+                <h2 class="text-2xl font-bold text-gray-800 mb-6">欢迎使用AI API服务</h2>
+                <p class="text-gray-600 mb-8">稳定、便宜、国内直连的AI API中转服务</p>
+                <button onclick="register()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold text-lg hover:bg-blue-700 transition">
+                    立即注册获取API密钥
+                </button>
+                <div class="mt-6 text-gray-500 text-sm">
+                    支持：Llama 3.3、Qwen 2.5、DeepSeek等模型
+                </div>
+            </div>
+        </div>
+
+        <!-- 已登录状态 -->
+        <div id="loggedIn" class="hidden">
+            <!-- 标签页 -->
+            <div class="flex border-b border-gray-200 mb-6">
+                <button onclick="showTab('dashboard')" id="tabDashboard" class="px-6 py-3 font-medium tab-active">
+                    📊 仪表盘
+                </button>
+                <button onclick="showTab('products')" id="tabProducts" class="px-6 py-3 font-medium text-gray-500 hover:text-gray-700">
+                    📦 购买套餐
+                </button>
+                <button onclick="showTab('usage')" id="tabUsage" class="px-6 py-3 font-medium text-gray-500 hover:text-gray-700">
+                    📈 使用记录
+                </button>
+                <button onclick="showTab('docs')" id="tabDocs" class="px-6 py-3 font-medium text-gray-500 hover:text-gray-700">
+                    📚 使用文档
+                </button>
+            </div>
+
+            <!-- 仪表盘 -->
+            <div id="panelDashboard" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h3 class="text-gray-500 text-sm">账户余额</h3>
+                        <p id="dashboardBalance" class="text-3xl font-bold text-green-600 mt-2">¥0.00</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h3 class="text-gray-500 text-sm">已用Token</h3>
+                        <p id="dashboardTokens" class="text-3xl font-bold text-blue-600 mt-2">0</p>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6">
+                        <h3 class="text-gray-500 text-sm">API请求数</h3>
+                        <p id="dashboardRequests" class="text-3xl font-bold text-purple-600 mt-2">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 购买套餐 -->
+            <div id="panelProducts" class="hidden">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-xl shadow p-6 border-2 border-gray-200 hover:border-blue-500 transition">
+                        <h3 class="text-xl font-bold">入门版</h3>
+                        <p class="text-4xl font-bold text-gray-800 my-4">¥10</p>
+                        <p class="text-gray-600 mb-6">100万Token</p>
+                        <button onclick="buyProduct('入门版', 10, 1000000)" class="w-full bg-gray-200 text-gray-800 py-3 rounded-lg font-bold hover:bg-gray-300 transition">
+                            购买
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 border-2 border-blue-500">
+                        <div class="bg-blue-500 text-white text-sm px-3 py-1 rounded-full inline-block mb-4">推荐</div>
+                        <h3 class="text-xl font-bold">专业版</h3>
+                        <p class="text-4xl font-bold text-gray-800 my-4">¥50</p>
+                        <p class="text-gray-600 mb-6">500万Token</p>
+                        <button onclick="buyProduct('专业版', 50, 5000000)" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold hover:bg-blue-700 transition">
+                            购买
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-xl shadow p-6 border-2 border-gray-200 hover:border-blue-500 transition">
+                        <h3 class="text-xl font-bold">企业版</h3>
+                        <p class="text-4xl font-bold text-gray-800 my-4">¥200</p>
+                        <p class="text-gray-600 mb-6">2500万Token</p>
+                        <button onclick="buyProduct('企业版', 200, 25000000)" class="w-full bg-gray-200 text-gray-800 py-3 rounded-lg font-bold hover:bg-gray-300 transition">
+                            购买
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 使用记录 -->
+            <div id="panelUsage" class="hidden">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="text-lg font-bold mb-4">API使用记录</h3>
+                    <div id="usageList" class="text-gray-500">
+                        暂无使用记录
+                    </div>
+                </div>
+            </div>
+
+            <!-- 使用文档 -->
+            <div id="panelDocs" class="hidden">
+                <div class="bg-white rounded-xl shadow p-6">
+                    <h3 class="text-lg font-bold mb-4">快速开始</h3>
+                    <div class="bg-gray-900 text-gray-100 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                        <pre># 使用您的API密钥调用
+curl -X POST https://your-domain.com/api/proxy \\
+  -H "Content-Type: application/json" \\
+  -H "Authorization: Bearer YOUR_API_KEY" \\
+  -d '{
+    "provider": "siliconflow",
+    "endpoint": "chat/completions",
+    "data": {
+      "model": "Qwen/Qwen2.5-7B-Instruct",
+      "messages": [{"role": "user", "content": "你好"}]
+    }
+  }'</pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 通知 -->
+        <div id="notification" class="fixed top-4 right-4 hidden">
+            <div id="notificationContent" class="bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentApiKey = null;
+
+        function showNotification(message, isError = false) {
+            const notification = document.getElementById('notification');
+            const content = document.getElementById('notificationContent');
+            content.textContent = message;
+            content.className = isError 
+                ? 'bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg'
+                : 'bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg';
+            notification.classList.remove('hidden');
+            setTimeout(() => notification.classList.add('hidden'), 3000);
+        }
+
+        async function register() {
+            try {
+                const response = await fetch('/api/create-user', {
+                    method: 'POST'
+                });
+                const data = await response.json();
+                if (data.api_key) {
+                    currentApiKey = data.api_key;
+                    localStorage.setItem('api_key', currentApiKey);
+                    showLoggedIn();
+                    showNotification('注册成功！您的API密钥已生成');
+                }
+            } catch (error) {
+                showNotification('注册失败，请重试', true);
+            }
+        }
+
+        function showLoggedIn() {
+            if (!currentApiKey) {
+                currentApiKey = localStorage.getItem('api_key');
+            }
+            if (currentApiKey) {
+                document.getElementById('notLoggedIn').classList.add('hidden');
+                document.getElementById('loggedIn').classList.remove('hidden');
+                document.getElementById('userInfo').classList.remove('hidden');
+                document.getElementById('apiKeyDisplay').textContent = currentApiKey.substring(0, 15) + '...';
+                updateDashboard();
+            }
+        }
+
+        async function updateDashboard() {
+            try {
+                const response = await fetch('/status');
+                const data = await response.json();
+                document.getElementById('dashboardBalance').textContent = '¥0.00';
+                document.getElementById('dashboardTokens').textContent = '0';
+                document.getElementById('dashboardRequests').textContent = data.total_requests || '0';
+                document.getElementById('balanceDisplay').textContent = '¥0.00';
+            } catch (error) {
+                console.error('更新仪表盘失败', error);
+            }
+        }
+
+        function showTab(tab) {
+            document.querySelectorAll('[id^="panel"]').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('[id^="tab"]').forEach(t => {
+                t.classList.remove('tab-active');
+                t.classList.add('text-gray-500');
+            });
+            document.getElementById('panel' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('hidden');
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('tab-active');
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.remove('text-gray-500');
+        }
+
+        async function buyProduct(productName, amount, tokens) {
+            showNotification('请联系管理员付款：微信 xxx-xxx-xxx');
+        }
+
+        window.onload = function() {
+            showLoggedIn();
+        };
+    </script>
+</body>
+</html>
