@@ -1,0 +1,137 @@
+[
+  {
+    "provider": "百度文心",
+    "base_url": "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop",
+    "response_time": 0.18,
+    "success_rate": 0.91,
+    "cost_per_token": 3e-05,
+    "status": "active",
+    "evaluation": {
+      "performance": 8.2,
+      "reliability": 9.1,
+      "cost_efficiency": 10,
+      "overall_score": 9.01
+    },
+    "recommendation": "强烈推荐"
+  },
+  {
+    "provider": "字节豆包",
+    "base_url": "https://ark.cn-beijing.volces.com/api/v3",
+    "response_time": 0.12,
+    "success_rate": 0.93,
+    "cost_per_token": 7.6e-05,
+    "status": "active",
+    "evaluation": {
+      "performance": 8.8,
+      "reliability": 9.3,
+      "cost_efficiency": 8,
+      "overall_score": 8.71
+    },
+    "recommendation": "强烈推荐"
+  },
+  {
+    "provider": "DeepSeek",
+    "base_url": "https://api.deepseek.com/v1",
+    "response_time": 0.35,
+    "success_rate": 0.92,
+    "cost_per_token": 3.5e-05,
+    "status": "active",
+    "evaluation": {
+      "performance": 6.5,
+      "reliability": 9.200000000000001,
+      "cost_efficiency": 10,
+      "overall_score": 8.36
+    },
+    "recommendation": "强烈推荐"
+  },
+  {
+    "provider": "Together",
+    "base_url": "https://api.together.ai/v1",
+    "response_time": 0.45,
+    "success_rate": 0.99,
+    "cost_per_token": 7.4e-05,
+    "status": "active",
+    "evaluation": {
+      "performance": 5.5,
+      "reliability": 9.9,
+      "cost_efficiency": 8,
+      "overall_score": 7.57
+    },
+    "recommendation": "推荐"
+  },
+  {
+    "provider": "MiniMax",
+    "base_url": "https://api.minimax.chat/v1",
+    "response_time": 0.32,
+    "success_rate": 1.0,
+    "cost_per_token": 8.2e-05,
+    "status": "active",
+    "evaluation": {
+      "performance": 6.8,
+      "reliability": 10.0,
+      "cost_efficiency": 6,
+      "overall_score": 7.5200000000000005
+    },
+    "recommendation": "推荐"
+  },
+  {
+    "provider": "阿里通义",
+    "base_url": "https://dashscope.aliyuncs.com/api/v1",
+    "response_time": 0.44,
+    "success_rate": 0.94,
+    "cost_per_token": 5.7e-05,
+    "status": "active",
+    "evaluation": {
+      "performance": 5.6,
+      "reliability": 9.399999999999999,
+      "cost_efficiency": 8,
+      "overall_score": 7.459999999999999
+    },
+    "recommendation": "推荐"
+  },
+  {
+    "provider": "Groq",
+    "base_url": "https://api.groq.com/v1",
+    "response_time": 0.72,
+    "success_rate": 0.95,
+    "cost_per_token": 2.9e-05,
+    "status": "active",
+    "evaluation": {
+      "performance": 2.8000000000000007,
+      "reliability": 9.5,
+      "cost_efficiency": 10,
+      "overall_score": 6.970000000000001
+    },
+    "recommendation": "推荐"
+  },
+  {
+    "provider": "Anthropic",
+    "base_url": "https://api.anthropic.com/v1",
+    "response_time": 0.57,
+    "success_rate": 0.94,
+    "cost_per_token": 8.9e-05,
+    "status": "active",
+    "evaluation": {
+      "performance": 4.300000000000001,
+      "reliability": 9.399999999999999,
+      "cost_efficiency": 6,
+      "overall_score": 6.34
+    },
+    "recommendation": "推荐"
+  },
+  {
+    "provider": "OpenAI",
+    "base_url": "https://api.openai.com/v1",
+    "response_time": 0.78,
+    "success_rate": 0.98,
+    "cost_per_token": 8.7e-05,
+    "status": "active",
+    "evaluation": {
+      "performance": 2.1999999999999993,
+      "reliability": 9.8,
+      "cost_efficiency": 6,
+      "overall_score": 5.619999999999999
+    },
+    "recommendation": "谨慎推荐"
+  }
+]

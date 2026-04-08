@@ -1,0 +1,23 @@
+{
+  "total_customers": 110,
+  "new_customers": 10,
+  "existing_customers": 100,
+  "acquisition_channels": [
+    "GitHub",
+    "开发者社区",
+    "AI交流群",
+    "闲鱼",
+    "小红书",
+    "知识星球",
+    "技术沙龙",
+    "创业孵化器",
+    "中小企业服务"
+  ],
+  "customer_types": [
+    "个人开发者",
+    "初创企业",
+    "中小企业",
+    "大型企业"
+  ],
+  "created_at": 1775549675.62005
+}

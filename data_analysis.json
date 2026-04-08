@@ -1,0 +1,40 @@
+{
+  "customer_analysis": {
+    "total_customers": 110,
+    "active_customers": 110,
+    "total_spending": 548637,
+    "average_spending": 4987.609090909091,
+    "customer_types": {
+      "个人开发者": 35,
+      "初创企业": 29,
+      "中小企业": 23,
+      "大型企业": 23
+    }
+  },
+  "affiliate_analysis": {
+    "total_affiliates": 10,
+    "active_affiliates": 10,
+    "total_sales": 154993,
+    "total_commission": 41908.8,
+    "average_commission_rate": 0.27,
+    "affiliate_types": {
+      "区域代理": 2,
+      "企业代理": 2,
+      "渠道代理": 4,
+      "个人代理": 2
+    }
+  },
+  "brand_analysis": {
+    "total_activities": 10,
+    "total_impact": 3986,
+    "average_impact": 398.6
+  },
+  "overall_analysis": {
+    "total_revenue": 703630,
+    "total_cost": 41908.8,
+    "profit": 661721.2,
+    "profit_margin": 94.04391512584739,
+    "customer_acquisition_cost": 380.9890909090909
+  },
+  "created_at": 1775550413.1930068
+}

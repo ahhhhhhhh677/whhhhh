@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: ai-api-proxy
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app_proxy:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.9.0
+      - key: ENVIRONMENT
+        value: production
+      - key: AUTO_GENERATE_TEST_DATA
+        value: "false"
+      - key: MOCK_DATA_ENABLED
+        value: "false"
+      - key: DEMO_MODE
+        value: "false"
+      - key: TEST_MODE
+        value: "false"
+      - key: REQUIRE_REAL_PAYMENT
+        value: "true"
+      - key: REQUIRE_REAL_API_CALL
+        value: "true"
+      - key: REQUIRE_REAL_USER
+        value: "true"

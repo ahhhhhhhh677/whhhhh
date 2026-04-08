@@ -1,0 +1,47 @@
+[
+  {
+    "customer_id": "customer_4597",
+    "name": "客户28",
+    "email": "customer8217@example.com",
+    "rating": 5,
+    "feedback": "服务很好，响应速度快，价格合理。",
+    "timestamp": 1775549058.5984197,
+    "status": "pending"
+  },
+  {
+    "customer_id": "customer_5291",
+    "name": "客户90",
+    "email": "customer7341@example.com",
+    "rating": 3,
+    "feedback": "API接口稳定，文档清晰，使用方便。",
+    "timestamp": 1775549058.5984197,
+    "status": "pending"
+  },
+  {
+    "customer_id": "customer_1764",
+    "name": "客户46",
+    "email": "customer8859@example.com",
+    "rating": 1,
+    "feedback": "希望能增加更多的AI模型支持。",
+    "timestamp": 1775549058.5984197,
+    "status": "pending"
+  },
+  {
+    "customer_id": "customer_9425",
+    "name": "客户48",
+    "email": "customer1622@example.com",
+    "rating": 4,
+    "feedback": "客服响应及时，问题解决迅速。",
+    "timestamp": 1775549058.5984197,
+    "status": "pending"
+  },
+  {
+    "customer_id": "customer_2004",
+    "name": "客户83",
+    "email": "customer9667@example.com",
+    "rating": 2,
+    "feedback": "价格有点贵，希望能有更多优惠活动。",
+    "timestamp": 1775549058.5984197,
+    "status": "pending"
+  }
+]

@@ -1,0 +1,67 @@
+[
+  {
+    "id": "imp_1775549134_1",
+    "area": "service_quality",
+    "description": "客户对服务很好，响应速度快，价格合理。表示满意",
+    "priority": "high",
+    "actions": [
+      "保持服务质量",
+      "进一步优化响应速度",
+      "提供更多增值服务"
+    ],
+    "target_date": "2026-07-15",
+    "status": "pending"
+  },
+  {
+    "id": "imp_1775549134_2",
+    "area": "service_quality",
+    "description": "客户对客服响应及时，问题解决迅速。表示满意",
+    "priority": "high",
+    "actions": [
+      "保持服务质量",
+      "进一步优化响应速度",
+      "提供更多增值服务"
+    ],
+    "target_date": "2026-07-15",
+    "status": "pending"
+  },
+  {
+    "id": "imp_1775549134_3",
+    "area": "model_support",
+    "description": "客户希望希望能增加更多的AI模型支持。",
+    "priority": "medium",
+    "actions": [
+      "增加更多AI模型支持",
+      "优化模型切换机制",
+      "提供模型性能对比"
+    ],
+    "target_date": "2026-07-30",
+    "status": "pending"
+  },
+  {
+    "id": "imp_1775549134_4",
+    "area": "pricing",
+    "description": "客户认为价格有点贵，希望能有更多优惠活动。",
+    "priority": "high",
+    "actions": [
+      "推出更多优惠套餐",
+      "针对长期客户提供折扣",
+      "优化定价策略，提高竞争力"
+    ],
+    "target_date": "2026-07-15",
+    "status": "pending"
+  },
+  {
+    "id": "imp_1775549134_5",
+    "area": "user_experience",
+    "description": "客户反馈API接口稳定，文档清晰，使用方便。",
+    "priority": "medium",
+    "actions": [
+      "优化用户界面",
+      "改进文档和教程",
+      "提供更多使用示例"
+    ],
+    "target_date": "2026-07-22",
+    "status": "pending"
+  }
+]

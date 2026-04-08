@@ -1,0 +1,62 @@
+{
+  "strategies": [
+    {
+      "strategy": "负载均衡",
+      "description": "根据提供商性能和可用性进行负载均衡",
+      "implementation": "轮询 + 权重分配"
+    },
+    {
+      "strategy": "智能路由",
+      "description": "根据请求类型和提供商专长进行智能路由",
+      "implementation": "基于模型类型和任务类型的路由"
+    },
+    {
+      "strategy": "故障转移",
+      "description": "当提供商不可用时自动切换到备用提供商",
+      "implementation": "心跳检测 + 自动切换"
+    },
+    {
+      "strategy": "性能监控",
+      "description": "实时监控提供商性能和响应时间",
+      "implementation": "定期健康检查 + 性能指标收集"
+    },
+    {
+      "strategy": "成本优化",
+      "description": "根据成本和性能进行动态调整",
+      "implementation": "基于成本效益比的资源分配"
+    }
+  ],
+  "optimized_providers": [
+    {
+      "provider": "百度文心",
+      "base_url": "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop",
+      "weight": 0.901,
+      "status": "active",
+      "last_health_check": 1775549449.6362348
+    },
+    {
+      "provider": "字节豆包",
+      "base_url": "https://ark.cn-beijing.volces.com/api/v3",
+      "weight": 0.8710000000000001,
+      "status": "active",
+      "last_health_check": 1775549449.6362348
+    },
+    {
+      "provider": "DeepSeek",
+      "base_url": "https://api.deepseek.com/v1",
+      "weight": 0.836,
+      "status": "active",
+      "last_health_check": 1775549449.6362348
+    }
+  ],
+  "load_balancing_weights": {
+    "百度文心": 0.901,
+    "字节豆包": 0.8710000000000001,
+    "DeepSeek": 0.836
+  },
+  "performance_thresholds": {
+    "response_time": 1.0,
+    "success_rate": 0.95
+  },
+  "created_at": 1775549449.6362348
+}

@@ -1,0 +1,23 @@
+{
+  "total_affiliates": 10,
+  "new_affiliates": 10,
+  "existing_affiliates": 0,
+  "recruitment_channels": [
+    "GitHub",
+    "开发者社区",
+    "AI交流群",
+    "闲鱼",
+    "小红书",
+    "知识星球",
+    "技术沙龙",
+    "创业孵化器",
+    "中小企业服务"
+  ],
+  "affiliate_types": [
+    "个人代理",
+    "企业代理",
+    "渠道代理",
+    "区域代理"
+  ],
+  "created_at": 1775550046.4767406
+}

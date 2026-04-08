@@ -1,0 +1,13 @@
+{
+  "title": "AI API中转服务 - 稳定、便宜、国内直连",
+  "body": "🚀 AI API中转服务正式上线！\n\n✅ 支持模型：\n- Llama 3.3 70B\n- Qwen 2.5\n- DeepSeek V3\n- 更多模型陆续接入\n\n✅ 服务优势：\n- 国内直连，无需翻墙\n- 价格便宜，比官方低20-30%\n- 稳定可靠，7×24小时服务\n- 支持OpenAI格式API\n\n✅ 价格表：\n- 100万 Token：30元\n- 500万 Token：140元\n- 1000万 Token：270元\n\n✅ 使用方式：\n1. 访问 http://localhost:8000\n2. 注册获取API密钥\n3. 开始调用API\n\n📞 联系方式：\n- 微信：xxx\n- 邮箱：xxx@example.com\n\n欢迎试用！",
+  "tags": [
+    "AI",
+    "API",
+    "大模型",
+    "Llama",
+    "DeepSeek",
+    "Qwen"
+  ],
+  "created_at": "2026-04-08T09:20:13.657585"
+}

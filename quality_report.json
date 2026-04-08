@@ -1,0 +1,19 @@
+{
+  "timestamp": 1775548979.9600112,
+  "service_health": {
+    "status": "healthy",
+    "timestamp": 1775548933.7228048,
+    "providers": {
+      "openai": true
+    }
+  },
+  "api_performance": {
+    "status": "failed",
+    "response_time": 44.19,
+    "status_code": 500
+  },
+  "affiliate_health": {
+    "status": "healthy"
+  },
+  "overall_status": "unhealthy"
+}

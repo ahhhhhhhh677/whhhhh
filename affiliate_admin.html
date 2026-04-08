@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI服务代理管理系统</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        h2 {
+            margin-bottom: 15px;
+            color: #34495e;
+            font-size: 18px;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .response {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .stat-card {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #7f8c8d;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI服务代理管理系统</h1>
+        
+        <!-- 创建代理 -->
+        <div class="card">
+            <h2>创建代理</h2>
+            <div class="form-group">
+                <label for="name">姓名</label>
+                <input type="text" id="name" placeholder="输入姓名">
+            </div>
+            <div class="form-group">
+                <label for="email">邮箱</label>
+                <input type="email" id="email" placeholder="输入邮箱">
+            </div>
+            <div class="form-group">
+                <label for="phone">电话</label>
+                <input type="text" id="phone" placeholder="输入电话">
+            </div>
+            <button onclick="createAffiliate()">创建代理</button>
+            <div id="createAffiliateResponse" class="response"></div>
+        </div>
+        
+        <!-- 代理管理 -->
+        <div class="card">
+            <h2>代理管理</h2>
+            <div class="form-group">
+                <label for="affiliateId">代理ID</label>
+                <input type="text" id="affiliateId" placeholder="输入代理ID">
+            </div>
+            <button onclick="getAffiliate()">查询代理</button>
+            <div id="getAffiliateResponse" class="response"></div>
+            
+            <h3 style="margin-top: 20px;">更新代理</h3>
+            <div class="form-group">
+                <label for="updateName">姓名</label>
+                <input type="text" id="updateName" placeholder="输入姓名">
+            </div>
+            <div class="form-group">
+                <label for="updateEmail">邮箱</label>
+                <input type="email" id="updateEmail" placeholder="输入邮箱">
+            </div>
+            <div class="form-group">
+                <label for="updatePhone">电话</label>
+                <input type="text" id="updatePhone" placeholder="输入电话">
+            </div>
+            <div class="form-group">
+                <label for="updateLevel">等级</label>
+                <select id="updateLevel">
+                    <option value="初级">初级</option>
+                    <option value="中级">中级</option>
+                    <option value="高级">高级</option>
+                    <option value="区域">区域</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="updateCommission">佣金比例</label>
+                <input type="number" id="updateCommission" placeholder="输入佣金比例" step="0.01" min="0" max="1">
+            </div>
+            <button onclick="updateAffiliate()">更新代理</button>
+            <div id="updateAffiliateResponse" class="response"></div>
+        </div>
+        
+        <!-- 推广链接 -->
+        <div class="card">
+            <h2>推广链接</h2>
+            <div class="form-group">
+                <label for="linkAffiliateId">代理ID</label>
+                <input type="text" id="linkAffiliateId" placeholder="输入代理ID">
+            </div>
+            <div class="form-group">
+                <label for="linkUrl">目标URL</label>
+                <input type="text" id="linkUrl" placeholder="输入目标URL" value="http://localhost:8000">
+            </div>
+            <button onclick="createReferralLink()">创建推广链接</button>
+            <div id="createReferralLinkResponse" class="response"></div>
+        </div>
+        
+        <!-- 订单管理 -->
+        <div class="card">
+            <h2>订单管理</h2>
+            <div class="form-group">
+                <label for="orderAffiliateId">代理ID</label>
+                <input type="text" id="orderAffiliateId" placeholder="输入代理ID">
+            </div>
+            <div class="form-group">
+                <label for="customerId">客户ID</label>
+                <input type="text" id="customerId" placeholder="输入客户ID">
+            </div>
+            <div class="form-group">
+                <label for="product">产品</label>
+                <input type="text" id="product" placeholder="输入产品">
+            </div>
+            <div class="form-group">
+                <label for="orderAmount">金额</label>
+                <input type="number" id="orderAmount" placeholder="输入金额" step="0.01" min="0.01">
+            </div>
+            <button onclick="createOrder()">创建订单</button>
+            <div id="createOrderResponse" class="response"></div>
+            
+            <h3 style="margin-top: 20px;">代理订单</h3>
+            <button onclick="getAffiliateOrders()">查询订单</button>
+            <div id="getAffiliateOrdersResponse" class="response"></div>
+        </div>
+        
+        <!-- 代理统计 -->
+        <div class="card">
+            <h2>代理统计</h2>
+            <button onclick="getAffiliateStats()">查询统计</button>
+            <div id="getAffiliateStatsResponse" class="response"></div>
+        </div>
+    </div>
+    
+    <script>
+        const API_BASE = 'http://localhost:8001';
+        
+        async function createAffiliate() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            
+            if (!name || !email) {
+                alert('请填写姓名和邮箱');
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE}/api/affiliates`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name, email, phone })
+            });
+            
+            const data = await response.json();
+            document.getElementById('createAffiliateResponse').innerHTML = `
+                <h3>代理创建成功</h3>
+                <p>代理ID: ${data.affiliate_id}</p>
+                <p>状态: ${data.status}</p>
+            `;
+        }
+        
+        async function getAffiliate() {
+            const affiliateId = document.getElementById('affiliateId').value;
+            
+            if (!affiliateId) {
+                alert('请输入代理ID');
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE}/api/affiliates/${affiliateId}`);
+            
+            try {
+                const data = await response.json();
+                document.getElementById('getAffiliateResponse').innerHTML = `
+                    <h3>代理详情</h3>
+                    <p>代理ID: ${data.affiliate_id}</p>
+                    <p>姓名: ${data.name}</p>
+                    <p>邮箱: ${data.email}</p>
+                    <p>电话: ${data.phone}</p>
+                    <p>等级: ${data.level}</p>
+                    <p>佣金比例: ${(data.commission_rate * 100).toFixed(2)}%</p>
+                    <p>总佣金: ${data.total_commission.toFixed(2)} 元</p>
+                    <p>总销售额: ${data.total_sales.toFixed(2)} 元</p>
+                    <p>状态: ${data.status}</p>
+                    <p>创建时间: ${data.created_at}</p>
+                `;
+            } catch (error) {
+                document.getElementById('getAffiliateResponse').innerHTML = `
+                    <h3>查询失败</h3>
+                    <p>代理不存在</p>
+                `;
+            }
+        }
+        
+        async function updateAffiliate() {
+            const affiliateId = document.getElementById('affiliateId').value;
+            const name = document.getElementById('updateName').value;
+            const email = document.getElementById('updateEmail').value;
+            const phone = document.getElementById('updatePhone').value;
+            const level = document.getElementById('updateLevel').value;
+            const commission = document.getElementById('updateCommission').value;
+            
+            if (!affiliateId) {
+                alert('请输入代理ID');
+                return;
+            }
+            
+            const updates = {};
+            if (name) updates.name = name;
+            if (email) updates.email = email;
+            if (phone) updates.phone = phone;
+            if (level) updates.level = level;
+            if (commission) updates.commission_rate = parseFloat(commission);
+            
+            const response = await fetch(`${API_BASE}/api/affiliates/${affiliateId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updates)
+            });
+            
+            const data = await response.json();
+            document.getElementById('updateAffiliateResponse').innerHTML = `
+                <h3>更新成功</h3>
+                <p>${data.message}</p>
+            `;
+        }
+        
+        async function createReferralLink() {
+            const affiliateId = document.getElementById('linkAffiliateId').value;
+            const url = document.getElementById('linkUrl').value;
+            
+            if (!affiliateId || !url) {
+                alert('请填写代理ID和目标URL');
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE}/api/referral-links`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ affiliate_id: affiliateId, url })
+            });
+            
+            const data = await response.json();
+            document.getElementById('createReferralLinkResponse').innerHTML = `
+                <h3>推广链接创建成功</h3>
+                <p>链接ID: ${data.link_id}</p>
+                <p>推广URL: <a href="${data.referral_url}" target="_blank">${data.referral_url}</a></p>
+            `;
+        }
+        
+        async function createOrder() {
+            const affiliateId = document.getElementById('orderAffiliateId').value;
+            const customerId = document.getElementById('customerId').value;
+            const product = document.getElementById('product').value;
+            const amount = document.getElementById('orderAmount').value;
+            
+            if (!affiliateId || !customerId || !product || !amount) {
+                alert('请填写所有字段');
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE}/api/orders`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                    affiliate_id: affiliateId, 
+                    customer_id: customerId, 
+                    product, 
+                    amount: parseFloat(amount) 
+                })
+            });
+            
+            try {
+                const data = await response.json();
+                document.getElementById('createOrderResponse').innerHTML = `
+                    <h3>订单创建成功</h3>
+                    <p>订单ID: ${data.order_id}</p>
+                    <p>状态: ${data.status}</p>
+                `;
+            } catch (error) {
+                document.getElementById('createOrderResponse').innerHTML = `
+                    <h3>创建失败</h3>
+                    <p>代理不存在</p>
+                `;
+            }
+        }
+        
+        async function getAffiliateOrders() {
+            const affiliateId = document.getElementById('orderAffiliateId').value;
+            
+            if (!affiliateId) {
+                alert('请输入代理ID');
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE}/api/affiliates/${affiliateId}/orders`);
+            const data = await response.json();
+            
+            let html = '<h3>代理订单</h3>';
+            if (data.orders.length === 0) {
+                html += '<p>暂无订单</p>';
+            } else {
+                html += '<table>';
+                html += '<tr><th>订单ID</th><th>客户ID</th><th>产品</th><th>金额</th><th>佣金</th><th>状态</th><th>创建时间</th></tr>';
+                data.orders.forEach(order => {
+                    html += `
+                        <tr>
+                            <td>${order.order_id}</td>
+                            <td>${order.customer_id}</td>
+                            <td>${order.product}</td>
+                            <td>${order.amount.toFixed(2)}</td>
+                            <td>${order.commission.toFixed(2)}</td>
+                            <td>${order.status}</td>
+                            <td>${order.created_at}</td>
+                        </tr>
+                    `;
+                });
+                html += '</table>';
+            }
+            document.getElementById('getAffiliateOrdersResponse').innerHTML = html;
+        }
+        
+        async function getAffiliateStats() {
+            const affiliateId = document.getElementById('affiliateId').value;
+            
+            if (!affiliateId) {
+                alert('请输入代理ID');
+                return;
+            }
+            
+            const response = await fetch(`${API_BASE}/api/affiliates/${affiliateId}/stats`);
+            
+            try {
+                const data = await response.json();
+                document.getElementById('getAffiliateStatsResponse').innerHTML = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">¥${data.total_commission.toFixed(2)}</div>
+                            <div class="stat-label">总佣金</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">¥${data.total_sales.toFixed(2)}</div>
+                            <div class="stat-label">总销售额</div>
+                        </div>
+                    </div>
+                `;
+            } catch (error) {
+                document.getElementById('getAffiliateStatsResponse').innerHTML = `
+                    <h3>查询失败</h3>
+                    <p>代理不存在</p>
+                `;
+            }
+        }
+    </script>
+</body>
+</html>

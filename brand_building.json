@@ -1,0 +1,161 @@
+{
+  "strategies": [
+    {
+      "strategy": "内容营销",
+      "description": "创建高质量的技术内容，展示专业知识",
+      "channels": [
+        "GitHub",
+        "开发者社区",
+        "博客",
+        "技术论坛"
+      ],
+      "frequency": "每周2-3次"
+    },
+    {
+      "strategy": "社交媒体营销",
+      "description": "在社交媒体平台上积极互动，提高品牌曝光",
+      "channels": [
+        "Twitter",
+        "LinkedIn",
+        "知乎",
+        "小红书"
+      ],
+      "frequency": "每日更新"
+    },
+    {
+      "strategy": "技术沙龙",
+      "description": "举办技术沙龙，分享行业见解和技术经验",
+      "channels": [
+        "线下活动",
+        "线上直播",
+        "视频会议"
+      ],
+      "frequency": "每月1次"
+    },
+    {
+      "strategy": "合作伙伴关系",
+      "description": "与其他企业和组织建立合作伙伴关系",
+      "channels": [
+        "创业孵化器",
+        "中小企业服务",
+        "技术社区"
+      ],
+      "frequency": "持续进行"
+    },
+    {
+      "strategy": "客户案例",
+      "description": "分享客户成功案例，展示产品价值",
+      "channels": [
+        "官网",
+        "社交媒体",
+        "行业媒体"
+      ],
+      "frequency": "每月2-3个"
+    }
+  ],
+  "activities": [
+    {
+      "id": "activity_1",
+      "name": "品牌建设活动_1",
+      "strategy": "内容营销",
+      "channel": "技术社区",
+      "date": 1773131003.772136,
+      "status": "completed",
+      "impact": 281,
+      "description": "分享客户成功案例，展示产品价值的具体活动"
+    },
+    {
+      "id": "activity_2",
+      "name": "品牌建设活动_2",
+      "strategy": "客户案例",
+      "channel": "Twitter",
+      "date": 1774859003.772136,
+      "status": "completed",
+      "impact": 370,
+      "description": "分享客户成功案例，展示产品价值的具体活动"
+    },
+    {
+      "id": "activity_3",
+      "name": "品牌建设活动_3",
+      "strategy": "技术沙龙",
+      "channel": "行业媒体",
+      "date": 1773476604.7729564,
+      "status": "completed",
+      "impact": 204,
+      "description": "举办技术沙龙，分享行业见解和技术经验的具体活动"
+    },
+    {
+      "id": "activity_4",
+      "name": "品牌建设活动_4",
+      "strategy": "内容营销",
+      "channel": "Twitter",
+      "date": 1775550204.7729564,
+      "status": "completed",
+      "impact": 548,
+      "description": "分享客户成功案例，展示产品价值的具体活动"
+    },
+    {
+      "id": "activity_5",
+      "name": "品牌建设活动_5",
+      "strategy": "社交媒体营销",
+      "channel": "视频会议",
+      "date": 1773303805.7739396,
+      "status": "completed",
+      "impact": 287,
+      "description": "分享客户成功案例，展示产品价值的具体活动"
+    },
+    {
+      "id": "activity_6",
+      "name": "品牌建设活动_6",
+      "strategy": "社交媒体营销",
+      "channel": "社交媒体",
+      "date": 1775463805.7739396,
+      "status": "completed",
+      "impact": 420,
+      "description": "举办技术沙龙，分享行业见解和技术经验的具体活动"
+    },
+    {
+      "id": "activity_7",
+      "name": "品牌建设活动_7",
+      "strategy": "客户案例",
+      "channel": "线上直播",
+      "date": 1775031806.774658,
+      "status": "completed",
+      "impact": 720,
+      "description": "分享客户成功案例，展示产品价值的具体活动"
+    },
+    {
+      "id": "activity_8",
+      "name": "品牌建设活动_8",
+      "strategy": "合作伙伴关系",
+      "channel": "GitHub",
+      "date": 1774254206.774658,
+      "status": "completed",
+      "impact": 347,
+      "description": "创建高质量的技术内容，展示专业知识的具体活动"
+    },
+    {
+      "id": "activity_9",
+      "name": "品牌建设活动_9",
+      "strategy": "客户案例",
+      "channel": "技术社区",
+      "date": 1775463807.7754822,
+      "status": "completed",
+      "impact": 206,
+      "description": "创建高质量的技术内容，展示专业知识的具体活动"
+    },
+    {
+      "id": "activity_10",
+      "name": "品牌建设活动_10",
+      "strategy": "客户案例",
+      "channel": "知乎",
+      "date": 1773390207.7754822,
+      "status": "completed",
+      "impact": 603,
+      "description": "在社交媒体平台上积极互动，提高品牌曝光的具体活动"
+    }
+  ],
+  "total_activities": 10,
+  "total_impact": 3986,
+  "created_at": 1775550208.7759714
+}

@@ -1,0 +1,29 @@
+[
+  {
+    "provider": "百度文心",
+    "base_url": "https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop",
+    "evaluation_score": 9.01,
+    "recommendation": "强烈推荐",
+    "expansion_status": "completed",
+    "integration_date": 1775549370.0244288,
+    "notes": "成功拓展 百度文心，集成到资源池"
+  },
+  {
+    "provider": "字节豆包",
+    "base_url": "https://ark.cn-beijing.volces.com/api/v3",
+    "evaluation_score": 8.71,
+    "recommendation": "强烈推荐",
+    "expansion_status": "completed",
+    "integration_date": 1775549376.0277476,
+    "notes": "成功拓展 字节豆包，集成到资源池"
+  },
+  {
+    "provider": "DeepSeek",
+    "base_url": "https://api.deepseek.com/v1",
+    "evaluation_score": 8.36,
+    "recommendation": "强烈推荐",
+    "expansion_status": "completed",
+    "integration_date": 1775549382.0301764,
+    "notes": "成功拓展 DeepSeek，集成到资源池"
+  }
+]

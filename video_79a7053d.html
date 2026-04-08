@@ -1,0 +1,687 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generated Video</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            padding: 30px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .prompt-info {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .prompt-info h3 {
+            color: #444;
+            margin-top: 0;
+        }
+        .video-container {
+            width: 100%;
+            max-width: 896px;
+            margin: 30px auto;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        canvas {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: black;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 30px 0;
+        }
+        .controls button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        .controls button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        .status {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-top: 20px;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #888;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Video Generator</h1>
+        <div class="prompt-info">
+            <h3>Prompt Analysis:</h3>
+            <p><strong>Input:</strong> 一只金色的猫在森林里奔跑</p>
+            <p><strong>Keywords:</strong> 金, 猫, 跑, 森林</p>
+        </div>
+        
+        <div class="controls">
+            <button onclick="playVideo()">▶️ Play</button>
+            <button onclick="pauseVideo()">⏸️ Pause</button>
+            <button onclick="stopVideo()">⏹️ Stop</button>
+        </div>
+        
+        <div class="video-container">
+            <canvas id="videoCanvas" width="896" height="512"></canvas>
+        </div>
+        
+        <div class="status" id="status">Ready to play</div>
+        
+        <div class="footer">
+            <p>Generated with AI Video Generator | Local Execution</p>
+        </div>
+    </div>
+    
+    <script>
+        const canvas = document.getElementById('videoCanvas');
+        const ctx = canvas.getContext('2d');
+        const totalFrames = 30;
+        const fps = 10;
+        let currentFrame = 0;
+        let isPlaying = false;
+        let interval;
+        
+        // 提示词分析结果
+        const keywords = {
+            colors: ['金'],
+            objects: ['猫'],
+            actions: ['跑'],
+            settings: ['森林']
+        };
+        
+        // 颜色映射
+        const colorMap = {
+            "红": "255, 69, 0",
+            "蓝": "0, 119, 255",
+            "绿": "0, 200, 83",
+            "黄": "255, 235, 59",
+            "紫": "142, 36, 170",
+            "橙": "255, 111, 0",
+            "粉": "255, 105, 180",
+            "黑": "33, 33, 33",
+            "白": "255, 255, 255",
+            "灰": "158, 158, 158",
+            "金": "255, 215, 0",
+            "银": "192, 192, 192"
+        };
+        
+        // 绘制渐变背景
+        function drawGradientBackground(frameIndex) {
+            const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+            
+            if (keywords.settings.includes("太空") || keywords.settings.includes("星空")) {
+                // 太空背景
+                gradient.addColorStop(0, "#0a0a2a");
+                gradient.addColorStop(0.5, "#1a1a4a");
+                gradient.addColorStop(1, "#0a0a2a");
+            } else if (keywords.settings.includes("夜晚")) {
+                // 夜晚背景
+                gradient.addColorStop(0, "#2c3e50");
+                gradient.addColorStop(0.5, "#34495e");
+                gradient.addColorStop(1, "#2c3e50");
+            } else if (keywords.settings.includes("海滩")) {
+                // 海滩背景
+                gradient.addColorStop(0, "#87ceeb");
+                gradient.addColorStop(0.7, "#87ceeb");
+                gradient.addColorStop(0.7, "#f5deb3");
+                gradient.addColorStop(1, "#f5deb3");
+            } else if (keywords.settings.includes("森林")) {
+                // 森林背景
+                gradient.addColorStop(0, "#87ceeb");
+                gradient.addColorStop(0.6, "#87ceeb");
+                gradient.addColorStop(0.6, "#228b22");
+                gradient.addColorStop(1, "#006400");
+            } else if (keywords.settings.includes("城市")) {
+                // 城市背景
+                gradient.addColorStop(0, "#87ceeb");
+                gradient.addColorStop(0.5, "#b0c4de");
+                gradient.addColorStop(1, "#708090");
+            } else if (keywords.settings.includes("沙漠")) {
+                // 沙漠背景
+                gradient.addColorStop(0, "#ffd700");
+                gradient.addColorStop(1, "#deb887");
+            } else {
+                // 默认背景
+                const hue = (frameIndex * 2) % 360;
+                gradient.addColorStop(0, `hsl(${hue}, 100%, 70%)`);
+                gradient.addColorStop(1, `hsl(${(hue + 60) % 360}, 100%, 85%)`);
+            }
+            
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        }
+        
+        // 绘制星星
+        function drawStars() {
+            for (let i = 0; i < 200; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height * 0.7;
+                const size = Math.random() * 2.5;
+                const opacity = Math.random() * 0.8 + 0.2;
+                
+                ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+        
+        // 绘制太阳
+        function drawSun(frameIndex) {
+            const sunX = 150 + Math.sin(frameIndex * 0.05) * 100;
+            const sunY = 150 + Math.cos(frameIndex * 0.05) * 50;
+            
+            // 太阳光芒
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * Math.PI * 2) / 12;
+                const length = 30 + Math.sin(frameIndex * 0.1 + i) * 10;
+                const x1 = sunX + Math.cos(angle) * 60;
+                const y1 = sunY + Math.sin(angle) * 60;
+                const x2 = sunX + Math.cos(angle) * (60 + length);
+                const y2 = sunY + Math.sin(angle) * (60 + length);
+                
+                ctx.strokeStyle = "rgba(255, 255, 0, 0.8)";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+                ctx.stroke();
+            }
+            
+            // 太阳主体
+            const gradient = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, 60);
+            gradient.addColorStop(0, "#ffff00");
+            gradient.addColorStop(0.7, "#ff8c00");
+            gradient.addColorStop(1, "#ff4500");
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.arc(sunX, sunY, 60, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // 绘制月亮
+        function drawMoon(frameIndex) {
+            const moonX = canvas.width - 150;
+            const moonY = 150;
+            
+            // 月亮主体
+            ctx.fillStyle = "#f0f0f0";
+            ctx.beginPath();
+            ctx.arc(moonX, moonY, 50, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 月亮阴影
+            ctx.fillStyle = "#e0e0e0";
+            ctx.beginPath();
+            ctx.arc(moonX - 10, moonY - 10, 50, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // 绘制树木
+        function drawTrees() {
+            const treePositions = [100, 250, 400, 550, 700, 850];
+            
+            treePositions.forEach((x, index) => {
+                const y = canvas.height * 0.7;
+                
+                // 树干
+                ctx.fillStyle = "#8b4513";
+                ctx.fillRect(x - 15, y - 120, 30, 120);
+                
+                // 树冠
+                const gradient = ctx.createRadialGradient(x, y - 150, 0, x, y - 150, 80);
+                gradient.addColorStop(0, "#32cd32");
+                gradient.addColorStop(1, "#228b22");
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(x, y - 150, 80, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        
+        // 绘制汽车
+        function drawCar(frameIndex) {
+            const carX = (frameIndex * 8) % (canvas.width + 200) - 100;
+            const carY = canvas.height * 0.65;
+            
+            // 车身
+            const carColor = keywords.colors.length > 0 ? colorMap[keywords.colors[0]] : "255, 69, 0";
+            
+            // 底部
+            ctx.fillStyle = `rgb(${carColor})`;
+            ctx.fillRect(carX, carY - 20, 120, 20);
+            
+            // 顶部
+            ctx.fillStyle = `rgb(${carColor})`;
+            ctx.fillRect(carX + 30, carY - 40, 60, 20);
+            
+            // 车窗
+            ctx.fillStyle = "#87ceeb";
+            ctx.fillRect(carX + 35, carY - 35, 50, 15);
+            
+            // 车轮
+            ctx.fillStyle = "#333";
+            ctx.beginPath();
+            ctx.arc(carX + 30, carY, 12, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(carX + 90, carY, 12, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 车轮中心
+            ctx.fillStyle = "#888";
+            ctx.beginPath();
+            ctx.arc(carX + 30, carY, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(carX + 90, carY, 4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // 绘制猫
+        function drawCat(frameIndex) {
+            const catX = 200 + Math.sin(frameIndex * 0.1) * 80;
+            const catY = canvas.height * 0.65;
+            const catColor = keywords.colors.length > 0 ? colorMap[keywords.colors[0]] : "169, 169, 169";
+            
+            // 身体
+            ctx.fillStyle = `rgb(${catColor})`;
+            ctx.beginPath();
+            ctx.ellipse(catX, catY, 40, 25, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 头部
+            ctx.beginPath();
+            ctx.arc(catX - 35, catY - 10, 20, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 耳朵
+            ctx.beginPath();
+            ctx.moveTo(catX - 45, catY - 20);
+            ctx.lineTo(catX - 35, catY - 35);
+            ctx.lineTo(catX - 25, catY - 20);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(catX - 25, catY - 20);
+            ctx.lineTo(catX - 15, catY - 35);
+            ctx.lineTo(catX - 5, catY - 20);
+            ctx.fill();
+            
+            // 眼睛
+            ctx.fillStyle = "#333";
+            ctx.beginPath();
+            ctx.arc(catX - 40, catY - 12, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(catX - 30, catY - 12, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 鼻子
+            ctx.fillStyle = "#ff69b4";
+            ctx.beginPath();
+            ctx.arc(catX - 35, catY - 5, 3, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 嘴巴
+            ctx.strokeStyle = "#333";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(catX - 35, catY - 3);
+            ctx.lineTo(catX - 35, catY + 2);
+            ctx.lineTo(catX - 40, catY + 5);
+            ctx.moveTo(catX - 35, catY + 2);
+            ctx.lineTo(catX - 30, catY + 5);
+            ctx.stroke();
+            
+            // 尾巴
+            const tailX = catX + 40 + Math.sin(frameIndex * 0.3) * 30;
+            const tailY = catY + Math.cos(frameIndex * 0.3) * 15;
+            
+            ctx.strokeStyle = `rgb(${catColor})`;
+            ctx.lineWidth = 10;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(catX + 35, catY);
+            ctx.quadraticCurveTo(catX + 50, catY - 10, tailX, tailY);
+            ctx.stroke();
+            ctx.lineWidth = 1;
+            
+            // 腿
+            ctx.fillStyle = `rgb(${catColor})`;
+            ctx.fillRect(catX - 15, catY + 15, 8, 15);
+            ctx.fillRect(catX + 5, catY + 15, 8, 15);
+            ctx.fillRect(catX - 30, catY + 5, 8, 10);
+            ctx.fillRect(catX - 10, catY + 5, 8, 10);
+        }
+        
+        // 绘制狗
+        function drawDog(frameIndex) {
+            const dogX = 300 + Math.sin(frameIndex * 0.1) * 80;
+            const dogY = canvas.height * 0.65;
+            const dogColor = keywords.colors.length > 0 ? colorMap[keywords.colors[0]] : "139, 69, 19";
+            
+            // 身体
+            ctx.fillStyle = `rgb(${dogColor})`;
+            ctx.beginPath();
+            ctx.ellipse(dogX, dogY, 45, 30, 0, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 头部
+            ctx.beginPath();
+            ctx.arc(dogX - 40, dogY - 15, 25, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 耳朵
+            ctx.beginPath();
+            ctx.moveTo(dogX - 50, dogY - 25);
+            ctx.lineTo(dogX - 40, dogY - 40);
+            ctx.lineTo(dogX - 30, dogY - 25);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(dogX - 30, dogY - 25);
+            ctx.lineTo(dogX - 20, dogY - 40);
+            ctx.lineTo(dogX - 10, dogY - 25);
+            ctx.fill();
+            
+            // 眼睛
+            ctx.fillStyle = "#333";
+            ctx.beginPath();
+            ctx.arc(dogX - 45, dogY - 15, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.arc(dogX - 35, dogY - 15, 4, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 鼻子
+            ctx.fillStyle = "#333";
+            ctx.beginPath();
+            ctx.arc(dogX - 40, dogY - 5, 5, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // 嘴巴
+            ctx.strokeStyle = "#333";
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(dogX - 40, dogY - 2);
+            ctx.lineTo(dogX - 40, dogY + 3);
+            ctx.lineTo(dogX - 45, dogY + 6);
+            ctx.moveTo(dogX - 40, dogY + 3);
+            ctx.lineTo(dogX - 35, dogY + 6);
+            ctx.stroke();
+            
+            // 尾巴
+            const tailX = dogX + 45 + Math.sin(frameIndex * 0.4) * 35;
+            const tailY = dogY - 10 + Math.cos(frameIndex * 0.4) * 20;
+            
+            ctx.strokeStyle = `rgb(${dogColor})`;
+            ctx.lineWidth = 12;
+            ctx.lineCap = "round";
+            ctx.beginPath();
+            ctx.moveTo(dogX + 40, dogY);
+            ctx.quadraticCurveTo(dogX + 60, dogY - 15, tailX, tailY);
+            ctx.stroke();
+            ctx.lineWidth = 1;
+            
+            // 腿
+            ctx.fillStyle = `rgb(${dogColor})`;
+            ctx.fillRect(dogX - 20, dogY + 20, 10, 18);
+            ctx.fillRect(dogX + 10, dogY + 20, 10, 18);
+            ctx.fillRect(dogX - 35, dogY + 10, 10, 12);
+            ctx.fillRect(dogX - 5, dogY + 10, 10, 12);
+        }
+        
+        // 绘制飞机
+        function drawPlane(frameIndex) {
+            const planeX = (frameIndex * 10) % (canvas.width + 200) - 100;
+            const planeY = 200 + Math.sin(frameIndex * 0.1) * 50;
+            
+            // 机身
+            ctx.fillStyle = "#87ceeb";
+            ctx.fillRect(planeX, planeY - 5, 100, 10);
+            
+            // 机翼
+            ctx.fillStyle = "#87ceeb";
+            ctx.fillRect(planeX + 40, planeY - 30, 20, 50);
+            
+            // 尾翼
+            ctx.fillStyle = "#87ceeb";
+            ctx.beginPath();
+            ctx.moveTo(planeX + 100, planeY - 10);
+            ctx.lineTo(planeX + 110, planeY - 5);
+            ctx.lineTo(planeX + 100, planeY);
+            ctx.fill();
+            
+            // 驾驶舱
+            ctx.fillStyle = "#333";
+            ctx.beginPath();
+            ctx.arc(planeX + 15, planeY, 8, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        // 绘制火箭
+        function drawRocket(frameIndex) {
+            const rocketX = canvas.width / 2;
+            const rocketY = 100 + frameIndex * 5;
+            
+            // 火箭主体
+            ctx.fillStyle = "#ff6b6b";
+            ctx.fillRect(rocketX - 15, rocketY, 30, 100);
+            
+            // 火箭头部
+            ctx.fillStyle = "#ff6b6b";
+            ctx.beginPath();
+            ctx.moveTo(rocketX - 15, rocketY);
+            ctx.lineTo(rocketX, rocketY - 20);
+            ctx.lineTo(rocketX + 15, rocketY);
+            ctx.fill();
+            
+            // 火箭尾翼
+            ctx.fillStyle = "#ff6b6b";
+            ctx.beginPath();
+            ctx.moveTo(rocketX - 15, rocketY + 100);
+            ctx.lineTo(rocketX - 30, rocketY + 120);
+            ctx.lineTo(rocketX - 15, rocketY + 110);
+            ctx.fill();
+            
+            ctx.beginPath();
+            ctx.moveTo(rocketX + 15, rocketY + 100);
+            ctx.lineTo(rocketX + 30, rocketY + 120);
+            ctx.lineTo(rocketX + 15, rocketY + 110);
+            ctx.fill();
+            
+            // 火焰
+            const gradient = ctx.createLinearGradient(rocketX, rocketY + 100, rocketX, rocketY + 150);
+            gradient.addColorStop(0, "#ff6b6b");
+            gradient.addColorStop(0.5, "#ffd93d");
+            gradient.addColorStop(1, "#ff6b6b");
+            
+            ctx.fillStyle = gradient;
+            ctx.beginPath();
+            ctx.moveTo(rocketX - 10, rocketY + 100);
+            ctx.lineTo(rocketX, rocketY + 140);
+            ctx.lineTo(rocketX + 10, rocketY + 100);
+            ctx.fill();
+        }
+        
+        // 绘制花朵
+        function drawFlowers() {
+            const flowerPositions = [150, 300, 450, 600, 750];
+            
+            flowerPositions.forEach((x, index) => {
+                const y = canvas.height * 0.7 + 20;
+                
+                // 茎
+                ctx.strokeStyle = "#228b22";
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+                ctx.lineTo(x, y - 80);
+                ctx.stroke();
+                
+                // 花瓣
+                const petalColor = keywords.colors.length > 0 ? colorMap[keywords.colors[0]] : "255, 105, 180";
+                ctx.fillStyle = `rgb(${petalColor})`;
+                
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i * Math.PI * 2) / 6;
+                    const petalX = x + Math.cos(angle) * 20;
+                    const petalY = y - 80 + Math.sin(angle) * 20;
+                    
+                    ctx.beginPath();
+                    ctx.ellipse(petalX, petalY, 12, 8, angle, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                
+                // 花心
+                ctx.fillStyle = "#ffd700";
+                ctx.beginPath();
+                ctx.arc(x, y - 80, 8, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+        
+        // 绘制场景
+        function drawScene(frameIndex) {
+            // 绘制背景
+            drawGradientBackground(frameIndex);
+            
+            // 绘制星星（如果是太空或夜晚）
+            if (keywords.settings.includes("太空") || keywords.settings.includes("星空") || keywords.settings.includes("夜晚")) {
+                drawStars();
+            }
+            
+            // 绘制太阳或月亮
+            if (keywords.objects.includes("太阳") || (!keywords.settings.includes("夜晚") && !keywords.settings.includes("太空"))) {
+                drawSun(frameIndex);
+            }
+            
+            if (keywords.objects.includes("月亮") || keywords.settings.includes("夜晚")) {
+                drawMoon(frameIndex);
+            }
+            
+            // 绘制树木
+            if (keywords.objects.includes("树") || keywords.settings.includes("森林") || keywords.settings.includes("草原")) {
+                drawTrees();
+            }
+            
+            // 绘制花朵
+            if (keywords.objects.includes("花")) {
+                drawFlowers();
+            }
+            
+            // 绘制汽车
+            if (keywords.objects.includes("汽车")) {
+                drawCar(frameIndex);
+            }
+            
+            // 绘制猫
+            if (keywords.objects.includes("猫")) {
+                drawCat(frameIndex);
+            }
+            
+            // 绘制狗
+            if (keywords.objects.includes("狗")) {
+                drawDog(frameIndex);
+            }
+            
+            // 绘制飞机
+            if (keywords.objects.includes("飞机")) {
+                drawPlane(frameIndex);
+            }
+            
+            // 绘制火箭
+            if (keywords.objects.includes("火箭")) {
+                drawRocket(frameIndex);
+            }
+            
+            // 绘制提示词
+            ctx.fillStyle = "rgba(255, 255, 255, 0.8)";
+            ctx.font = "20px 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            ctx.textAlign = "center";
+            ctx.fillText('"' + 一只金色的猫在森林里奔跑"', canvas.width / 2, 50);
+        }
+        
+        function drawFrame(frameIndex) {
+            drawScene(frameIndex);
+        }
+        
+        function showFrame(index) {
+            drawFrame(index);
+            document.getElementById('status').textContent = `Frame ${index + 1}/${totalFrames}`;
+        }
+        
+        function playVideo() {
+            if (!isPlaying) {
+                isPlaying = true;
+                interval = setInterval(function() {
+                    currentFrame = (currentFrame + 1) % totalFrames;
+                    showFrame(currentFrame);
+                }, 100);
+            }
+        }
+        
+        function pauseVideo() {
+            isPlaying = false;
+            clearInterval(interval);
+        }
+        
+        function stopVideo() {
+            isPlaying = false;
+            clearInterval(interval);
+            currentFrame = 0;
+            showFrame(currentFrame);
+        }
+        
+        // 显示第一帧
+        showFrame(0);
+    </script>
+</body>
+</html>

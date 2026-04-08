@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>高级AI视频生成器</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        .gradient-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="py-10 px-4">
+    <div class="max-w-4xl mx-auto">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-5xl font-bold text-white mb-4">高级AI视频生成器</h1>
+            <p class="text-white/80 text-lg">使用高级算法生成高质量AI视频</p>
+        </div>
+
+        <!-- Main Panel -->
+        <div class="glass-panel p-8">
+            <!-- Prompt Input -->
+            <div class="mb-6">
+                <label class="block text-gray-700 font-bold mb-2 text-lg">视频描述</label>
+                <textarea id="prompt" 
+                    class="w-full border-2 border-gray-200 rounded-xl p-4 h-32 focus:border-purple-500 focus:outline-none transition-colors"
+                    placeholder="描述你想要的视频场景，例如：雪山日落，金色阳光，松树，飘雪..."></textarea>
+            </div>
+
+            <!-- Settings Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <!-- Duration -->
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">时长（秒）</label>
+                    <input type="number" id="duration" value="4" min="1" max="10"
+                        class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-purple-500 focus:outline-none">
+                </div>
+
+                <!-- FPS -->
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">帧率（FPS）</label>
+                    <input type="number" id="fps" value="15" min="10" max="30"
+                        class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-purple-500 focus:outline-none">
+                </div>
+
+                <!-- Style -->
+                <div>
+                    <label class="block text-gray-700 font-bold mb-2">风格</label>
+                    <select id="style" 
+                        class="w-full border-2 border-gray-200 rounded-xl p-3 focus:border-purple-500 focus:outline-none bg-white">
+                        <option value="realistic">写实风格</option>
+                        <option value="anime">动漫风格</option>
+                        <option value="painting">油画风格</option>
+                        <option value="cyberpunk">赛博朋克</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Generate Button -->
+            <button onclick="generateVideo()" 
+                class="gradient-btn w-full text-white font-bold py-4 rounded-xl text-lg">
+                🎬 开始生成AI视频
+            </button>
+
+            <!-- Loading Section -->
+            <div id="loading" class="hidden mt-8 text-center">
+                <div class="loading-spinner mx-auto mb-4"></div>
+                <p class="text-purple-600 font-bold text-lg">正在生成AI视频...</p>
+                <p class="text-gray-500 text-sm mt-2">生成关键帧 → 帧插值 → 合成视频</p>
+            </div>
+
+            <!-- Result Section -->
+            <div id="result" class="hidden mt-8">
+                <div class="border-2 border-purple-200 rounded-xl overflow-hidden">
+                    <video id="videoPlayer" controls class="w-full">
+                        您的浏览器不支持视频播放
+                    </video>
+                </div>
+                <div class="mt-4 flex justify-center gap-4">
+                    <button onclick="downloadVideo()" 
+                        class="bg-green-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-green-600 transition-colors">
+                        ⬇️ 下载视频
+                    </button>
+                    <button onclick="generateAgain()" 
+                        class="bg-purple-500 text-white px-6 py-2 rounded-lg font-bold hover:bg-purple-600 transition-colors">
+                        🔄 重新生成
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Features -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8">
+            <div class="glass-panel p-6 text-center">
+                <div class="text-4xl mb-2">🎨</div>
+                <h3 class="font-bold text-gray-800">多种风格</h3>
+                <p class="text-gray-600 text-sm">写实、动漫、油画、赛博朋克</p>
+            </div>
+            <div class="glass-panel p-6 text-center">
+                <div class="text-4xl mb-2">⚡</div>
+                <h3 class="font-bold text-gray-800">快速生成</h3>
+                <p class="text-gray-600 text-sm">本地运行，无需等待</p>
+            </div>
+            <div class="glass-panel p-6 text-center">
+                <div class="text-4xl mb-2">🎬</div>
+                <h3 class="font-bold text-gray-800">高清输出</h3>
+                <p class="text-gray-600 text-sm">1024x768分辨率</p>
+            </div>
+            <div class="glass-panel p-6 text-center">
+                <div class="text-4xl mb-2">🔒</div>
+                <h3 class="font-bold text-gray-800">完全本地</h3>
+                <p class="text-gray-600 text-sm">无需联网，保护隐私</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentVideoUrl = '';
+
+        async function generateVideo() {
+            const prompt = document.getElementById('prompt').value;
+            const duration = document.getElementById('duration').value;
+            const fps = document.getElementById('fps').value;
+            const style = document.getElementById('style').value;
+
+            if (!prompt.trim()) {
+                alert('请输入视频描述');
+                return;
+            }
+
+            // Show loading
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('result').classList.add('hidden');
+
+            try {
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        prompt: prompt,
+                        duration: parseInt(duration),
+                        fps: parseInt(fps),
+                        style: style
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    currentVideoUrl = data.video;
+                    document.getElementById('videoPlayer').src = data.video;
+                    document.getElementById('result').classList.remove('hidden');
+                } else {
+                    alert('生成失败：' + (data.detail || '未知错误'));
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('生成失败：' + error.message);
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        }
+
+        function downloadVideo() {
+            if (currentVideoUrl) {
+                const link = document.createElement('a');
+                link.href = currentVideoUrl;
+                link.download = 'ai_video_' + Date.now() + '.mp4';
+                link.click();
+            }
+        }
+
+        function generateAgain() {
+            document.getElementById('result').classList.add('hidden');
+            document.getElementById('prompt').value = '';
+            document.getElementById('prompt').focus();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>高质量AI视频生成</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+<div class="max-w-3xl mx-auto py-10 px-4">
+    <h1 class="text-3xl font-bold text-center text-blue-600 mb-6">高质量AI视频生成</h1>
+    <div class="bg-white p-6 rounded-xl shadow">
+        <div class="mb-4">
+            <label class="font-bold">视频描述</label>
+            <textarea id="prompt" class="w-full border rounded p-3 h-24 mt-2" placeholder="输入视频描述，例如：森林日落，湖水倒影，飞鸟掠过"></textarea>
+        </div>
+        <button onclick="runGen()" class="w-full bg-blue-600 text-white py-3 rounded-lg font-bold">
+            开始AI生成视频
+        </button>
+        <div id="load" class="hidden mt-4 text-center text-orange-500 font-bold">
+            正在生成高质量视频，请等待...
+        </div>
+        <div id="res" class="hidden mt-6">
+            <video id="v" controls class="w-full rounded"></video>
+            <a id="downloadLink" href="#" class="hidden mt-3 inline-block bg-green-600 text-white py-2 px-4 rounded-lg font-bold">
+                下载视频
+            </a>
+        </div>
+    </div>
+</div>
+<script>
+async function runGen(){
+    let p = document.getElementById('prompt').value;
+    document.getElementById('load').classList.remove('hidden');
+    document.getElementById('res').classList.add('hidden');
+
+    try {
+        let r = await fetch('/generate',{
+            method:'POST',
+            headers:{'Content-Type':'application/json'},
+            body:JSON.stringify({prompt:p})
+        });
+        
+        if (!r.ok) {
+            throw new Error(`HTTP error! status: ${r.status}`);
+        }
+        
+        let data = await r.json();
+        console.log('API响应:', data);
+        
+        if (data.video) {
+            const videoElement = document.getElementById('v');
+            videoElement.src = data.video;
+            videoElement.load();
+            document.getElementById('res').classList.remove('hidden');
+            
+            const downloadLink = document.getElementById('downloadLink');
+            if (downloadLink) {
+                downloadLink.href = data.video;
+                downloadLink.download = `video_${Date.now()}.mp4`;
+                downloadLink.classList.remove('hidden');
+            }
+        } else {
+            throw new Error('API返回失败: ' + JSON.stringify(data));
+        }
+    } catch (error) {
+        console.error('生成视频时出错:', error);
+        alert('生成视频时出错: ' + error.message);
+    } finally {
+        document.getElementById('load').classList.add('hidden');
+    }
+}
+</script>
+</body>
+</html>

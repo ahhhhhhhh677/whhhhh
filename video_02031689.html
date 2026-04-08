@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Generated Video</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .video-container { width: 100%; max-width: 896px; margin: 0 auto; }
+        canvas { border: 1px solid #ccc; }
+        .controls { margin: 20px 0; }
+    </style>
+</head>
+<body>
+    <h1>Generated Video: 漫画</h1>
+    <div class="controls">
+        <button onclick="playVideo()">Play</button>
+        <button onclick="pauseVideo()">Pause</button>
+        <button onclick="stopVideo()">Stop</button>
+        <span id="status">Ready</span>
+    </div>
+    <div class="video-container">
+        <canvas id="videoCanvas" width="896" height="512"></canvas>
+    </div>
+    <script>
+        const canvas = document.getElementById('videoCanvas');
+        const ctx = canvas.getContext('2d');
+        const totalFrames = 30;
+        const fps = 10;
+        let currentFrame = 0;
+        let isPlaying = false;
+        let interval;
+        
+        function drawFrame(frameIndex) {
+            // 清除画布
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制背景
+            const color1 = 100 + (frameIndex * 7) % 155;
+            const color2 = 50 + (frameIndex * 13) % 200;
+            const color3 = 150 + (frameIndex * 5) % 105;
+            ctx.fillStyle = 'rgb(' + color1 + ', ' + color2 + ', ' + color3 + ')';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // 绘制文字
+            ctx.fillStyle = 'white';
+            ctx.font = '24px Arial';
+            ctx.fillText('Prompt: 漫画', 30, 60);
+            ctx.fillText('Frame: ' + frameIndex, 30, 120);
+            
+            // 绘制移动的圆形
+            const shift = (frameIndex * 5) % 50;
+            ctx.fillStyle = 'rgb(255, 200, 150)';
+            ctx.beginPath();
+            ctx.arc(450 + shift, 256, 80, 0, Math.PI * 2);
+            ctx.fill();
+        }
+        
+        function showFrame(index) {
+            drawFrame(index);
+            document.getElementById('status').textContent = 'Frame ' + (index + 1) + '/' + totalFrames;
+        }
+        
+        function playVideo() {
+            if (!isPlaying) {
+                isPlaying = true;
+                interval = setInterval(function() {
+                    currentFrame = (currentFrame + 1) % totalFrames;
+                    showFrame(currentFrame);
+                }, 100);
+            }
+        }
+        
+        function pauseVideo() {
+            isPlaying = false;
+            clearInterval(interval);
+        }
+        
+        function stopVideo() {
+            isPlaying = false;
+            clearInterval(interval);
+            currentFrame = 0;
+            showFrame(currentFrame);
+        }
+        
+        // 显示第一帧
+        showFrame(0);
+    </script>
+</body>
+</html>

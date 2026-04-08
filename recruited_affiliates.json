@@ -1,0 +1,37 @@
+[
+  {
+    "name": "张三",
+    "email": "zhangsan@example.com",
+    "phone": "13800138001",
+    "affiliate_code": "aff_1406",
+    "status": "active"
+  },
+  {
+    "name": "李四",
+    "email": "lisi@example.com",
+    "phone": "13900139001",
+    "affiliate_code": "aff_9256",
+    "status": "active"
+  },
+  {
+    "name": "王五",
+    "email": "wangwu@example.com",
+    "phone": "13700137001",
+    "affiliate_code": "aff_1891",
+    "status": "active"
+  },
+  {
+    "name": "赵六",
+    "email": "zhaoliu@example.com",
+    "phone": "13600136001",
+    "affiliate_code": "aff_8482",
+    "status": "active"
+  },
+  {
+    "name": "钱七",
+    "email": "qianqi@example.com",
+    "phone": "13500135001",
+    "affiliate_code": "aff_5845",
+    "status": "active"
+  }
+]

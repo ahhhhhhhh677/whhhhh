@@ -1,0 +1,164 @@
+{
+  "mechanism": [
+    {
+      "component": "定期业务评估",
+      "description": "定期对业务进行评估，识别问题和改进机会",
+      "frequency": "每月一次",
+      "process": [
+        "收集业务数据",
+        "分析业务绩效",
+        "识别问题和改进机会",
+        "制定改进计划",
+        "实施改进措施",
+        "评估改进效果"
+      ]
+    },
+    {
+      "component": "客户反馈收集",
+      "description": "持续收集和分析客户反馈，了解客户需求和痛点",
+      "frequency": "持续进行",
+      "process": [
+        "设计反馈收集机制",
+        "收集客户反馈",
+        "分析客户反馈",
+        "识别客户需求和痛点",
+        "制定改进措施",
+        "实施改进措施",
+        "评估改进效果"
+      ]
+    },
+    {
+      "component": "服务流程优化",
+      "description": "持续优化服务流程，提高服务质量和效率",
+      "frequency": "每季度一次",
+      "process": [
+        "分析现有服务流程",
+        "识别流程瓶颈和问题",
+        "制定流程优化方案",
+        "实施流程优化",
+        "评估优化效果",
+        "持续改进"
+      ]
+    },
+    {
+      "component": "上游资源拓展",
+      "description": "持续拓展上游资源和提供商，优化资源池配置",
+      "frequency": "每半年一次",
+      "process": [
+        "评估现有提供商",
+        "识别潜在的新提供商",
+        "评估新提供商",
+        "拓展新提供商",
+        "集成新提供商到资源池",
+        "优化资源池配置"
+      ]
+    },
+    {
+      "component": "员工培训和发展",
+      "description": "持续培训和发展员工，提高员工专业能力和服务水平",
+      "frequency": "每季度一次",
+      "process": [
+        "识别员工培训需求",
+        "设计培训计划",
+        "实施培训",
+        "评估培训效果",
+        "持续改进培训计划"
+      ]
+    }
+  ],
+  "activities": [
+    {
+      "id": "activity_1",
+      "name": "持续改进活动_1",
+      "component": "上游资源拓展",
+      "date": 1773391574.637008,
+      "status": "completed",
+      "impact": 488,
+      "description": "持续拓展上游资源和提供商，优化资源池配置的具体活动"
+    },
+    {
+      "id": "activity_2",
+      "name": "持续改进活动_2",
+      "component": "上游资源拓展",
+      "date": 1774773974.637008,
+      "status": "completed",
+      "impact": 364,
+      "description": "持续拓展上游资源和提供商，优化资源池配置的具体活动"
+    },
+    {
+      "id": "activity_3",
+      "name": "持续改进活动_3",
+      "component": "上游资源拓展",
+      "date": 1772959575.6378884,
+      "status": "completed",
+      "impact": 872,
+      "description": "持续培训和发展员工，提高员工专业能力和服务水平的具体活动"
+    },
+    {
+      "id": "activity_4",
+      "name": "持续改进活动_4",
+      "component": "员工培训和发展",
+      "date": 1774601175.6378884,
+      "status": "completed",
+      "impact": 479,
+      "description": "持续培训和发展员工，提高员工专业能力和服务水平的具体活动"
+    },
+    {
+      "id": "activity_5",
+      "name": "持续改进活动_5",
+      "component": "员工培训和发展",
+      "date": 1774773976.6385891,
+      "status": "completed",
+      "impact": 370,
+      "description": "持续培训和发展员工，提高员工专业能力和服务水平的具体活动"
+    },
+    {
+      "id": "activity_6",
+      "name": "持续改进活动_6",
+      "component": "上游资源拓展",
+      "date": 1773909976.6385891,
+      "status": "completed",
+      "impact": 922,
+      "description": "持续优化服务流程，提高服务质量和效率的具体活动"
+    },
+    {
+      "id": "activity_7",
+      "name": "持续改进活动_7",
+      "component": "定期业务评估",
+      "date": 1772959577.6396654,
+      "status": "completed",
+      "impact": 146,
+      "description": "持续收集和分析客户反馈，了解客户需求和痛点的具体活动"
+    },
+    {
+      "id": "activity_8",
+      "name": "持续改进活动_8",
+      "component": "定期业务评估",
+      "date": 1774773977.6396654,
+      "status": "completed",
+      "impact": 271,
+      "description": "持续收集和分析客户反馈，了解客户需求和痛点的具体活动"
+    },
+    {
+      "id": "activity_9",
+      "name": "持续改进活动_9",
+      "component": "定期业务评估",
+      "date": 1773477978.6405983,
+      "status": "completed",
+      "impact": 920,
+      "description": "持续培训和发展员工，提高员工专业能力和服务水平的具体活动"
+    },
+    {
+      "id": "activity_10",
+      "name": "持续改进活动_10",
+      "component": "上游资源拓展",
+      "date": 1775292378.6405983,
+      "status": "completed",
+      "impact": 674,
+      "description": "持续培训和发展员工，提高员工专业能力和服务水平的具体活动"
+    }
+  ],
+  "total_activities": 10,
+  "total_impact": 5506,
+  "created_at": 1775551579.6414955
+}
